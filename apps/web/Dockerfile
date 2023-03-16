@@ -7,17 +7,17 @@ RUN apk update
 RUN npm install -g pnpm turbo
 
 
+
 FROM base AS deps
 WORKDIR /app
-
-COPY . .
-
-# First install the dependencies (as they change less often)
+# COPY ./pnpm-lock.yaml .npmrc ./
+COPY ./pnpm-lock.yaml ./
 RUN pnpm fetch
-RUN pnpm recursive install --offline --frozen-lockfile
 
 
 FROM deps AS builder
+COPY . .
+RUN pnpm recursive install --offline --frozen-lockfile
 RUN pnpm build
 
 RUN ls -al /app/apps/web/.next
