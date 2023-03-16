@@ -23,7 +23,7 @@ RUN pnpm build
 RUN ls -al /app/apps/web/.next
 RUN ls -al /app/apps/web/.next/standalone
 
-FROM builder AS runner
+FROM node:alpine AS runner
 WORKDIR /app
 
 # Don't run production as root
@@ -39,5 +39,5 @@ COPY --from=builder /app/apps/web/package.json .
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 # COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
-ENTRYPOINT [ "executable" ]
+
 CMD node apps/web/server.js
